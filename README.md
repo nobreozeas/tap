@@ -50,3 +50,10 @@ Depois abra `http://localhost:8080`.
 ## Publicar no Netlify
 
 Você pode arrastar a pasta inteira para o Netlify Drop ou conectar um repositório Git. Não há comando de build e a pasta publicada é a raiz do projeto.
+
+
+## Atualização do baralho
+
+- O jogo inclui **606 categorias** variadas.
+- Na tela de categoria, use **↻ Trocar carta** para descartar uma categoria já conhecida e sortear outra antes de iniciar a rodada.
+- As cartas sorteadas/trocadas saem do baralho da partida e não reaparecem até o baralho ser renovado.

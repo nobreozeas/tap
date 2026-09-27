@@ -1,4 +1,4 @@
-const CACHE = 'tap-palavra-v1';
+const CACHE = 'tap-palavra-v2';
 const ASSETS = [
   './',
   './index.html',

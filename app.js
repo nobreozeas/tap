@@ -15,7 +15,7 @@
     gameCategory: $('game-category'), currentPlayer: $('current-player'), turnHelp: $('turn-help'), wheel: $('letter-wheel'), centerButton: $('center-button'),
     timerValue: $('timer-value'), centerLabel: $('center-label'), roundWinner: $('round-winner'), roundScoreMessage: $('round-score-message'),
     gameWinner: $('game-winner'), gameFinalMessage: $('game-final-message'), pauseModal: $('pause-modal'), confirmModal: $('confirm-modal'),
-    toast: $('toast'), installButton: $('btn-install')
+    toast: $('toast'), installButton: $('btn-install'), deckStatus: $('deck-status')
   };
 
   const state = {
@@ -102,13 +102,34 @@
     return copy;
   }
 
-  function resetDeck() {
-    state.deck = shuffled(window.GAME_CARDS || []);
+  function resetDeck(exclude = []) {
+    const excluded = new Set(exclude.filter(Boolean));
+    const cards = (window.GAME_CARDS || []).filter(card => !excluded.has(card));
+    state.deck = shuffled(cards);
   }
 
   function drawCategory() {
-    if (!state.deck.length) resetDeck();
+    const previous = state.category;
+    if (!state.deck.length) resetDeck(previous ? [previous] : []);
     state.category = state.deck.pop() || 'Animais';
+    updateDeckStatus();
+  }
+
+  function updateDeckStatus() {
+    if (!el.deckStatus) return;
+    const total = (window.GAME_CARDS || []).length;
+    const remaining = state.deck.length;
+    el.deckStatus.textContent = `${remaining} de ${total} cartas ainda não sorteadas`;
+  }
+
+  function redrawCategory() {
+    if (state.roundActive) return;
+    const oldCategory = state.category;
+    drawCategory();
+    el.introCategory.textContent = state.category;
+    playClick();
+    vibrate(25);
+    if (oldCategory !== state.category) showToast('Nova categoria sorteada!');
   }
 
   function startNewGame() {
@@ -438,6 +459,7 @@
   $('btn-randomize-names').addEventListener('click', quickNames);
   $('btn-start-game').addEventListener('click', startNewGame);
   $('btn-begin-round').addEventListener('click', beginRound);
+  $('btn-redraw-category').addEventListener('click', redrawCategory);
   el.centerButton.addEventListener('click', confirmTurn);
   $('btn-pause').addEventListener('click', pauseGame);
   $('btn-resume').addEventListener('click', resumeGame);
