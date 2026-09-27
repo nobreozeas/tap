@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#171526" />
+  <meta name="description" content="Jogo local de palavras por categorias, letras e tempo." />
+  <title>Tap Palavra</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main id="app" class="app-shell">
+    <section id="screen-home" class="screen active" aria-labelledby="home-title">
+      <div class="hero-card">
+        <div class="brand-mark" aria-hidden="true">TP</div>
+        <p class="eyebrow">Jogo de palavras no mesmo celular</p>
+        <h1 id="home-title">Tap Palavra</h1>
+        <p class="subtitle">Escolha uma categoria, pense rápido, marque uma letra e passe a vez antes do tempo acabar.</p>
+        <div class="home-actions">
+          <button id="btn-new-game" class="btn btn-primary btn-large">Nova partida</button>
+          <button id="btn-install" class="btn btn-secondary hidden">Instalar no celular</button>
+        </div>
+        <div class="feature-strip" aria-label="Recursos do jogo">
+          <span>Sem login</span>
+          <span>Offline</span>
+          <span>Sem backend</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-setup" class="screen" aria-labelledby="setup-title">
+      <div class="panel setup-panel">
+        <div class="screen-header">
+          <button class="icon-btn" data-go-home aria-label="Voltar">←</button>
+          <div>
+            <p class="eyebrow">Configuração</p>
+            <h2 id="setup-title">Prepare a partida</h2>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Quantidade de jogadores</span>
+            <select id="player-count">
+              <option value="2">2 jogadores</option>
+              <option value="3" selected>3 jogadores</option>
+              <option value="4">4 jogadores</option>
+              <option value="5">5 jogadores</option>
+              <option value="6">6 jogadores</option>
+              <option value="7">7 jogadores</option>
+              <option value="8">8 jogadores</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Tempo por turno</span>
+            <select id="turn-time">
+              <option value="5">5 segundos</option>
+              <option value="10" selected>10 segundos</option>
+              <option value="15">15 segundos</option>
+              <option value="20">20 segundos</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Cartas para vencer</span>
+            <select id="target-score">
+              <option value="1">1 carta</option>
+              <option value="2">2 cartas</option>
+              <option value="3" selected>3 cartas</option>
+              <option value="5">5 cartas</option>
+            </select>
+          </label>
+
+          <label class="field switch-field">
+            <span>Usar letras difíceis (K, W, X, Y, Z)</span>
+            <input id="hard-letters" type="checkbox" />
+          </label>
+        </div>
+
+        <div>
+          <div class="section-title-row">
+            <h3>Jogadores</h3>
+            <button id="btn-randomize-names" class="text-btn" type="button">Nomes rápidos</button>
+          </div>
+          <div id="player-inputs" class="player-inputs"></div>
+        </div>
+
+        <div class="setup-actions">
+          <button id="btn-start-game" class="btn btn-primary btn-large">Começar partida</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-round-intro" class="screen" aria-labelledby="round-intro-title">
+      <div class="panel intro-panel">
+        <p id="round-number-label" class="eyebrow">Rodada 1</p>
+        <h2 id="round-intro-title">Categoria sorteada</h2>
+        <div class="category-card big">
+          <span class="category-label">CATEGORIA</span>
+          <strong id="intro-category">Animais</strong>
+        </div>
+        <div class="starter-box">
+          <span>Começa:</span>
+          <strong id="intro-starter">Jogador 1</strong>
+        </div>
+        <button id="btn-begin-round" class="btn btn-primary btn-large">Iniciar rodada</button>
+      </div>
+    </section>
+
+    <section id="screen-game" class="screen" aria-labelledby="game-title">
+      <div class="game-layout">
+        <header class="game-topbar">
+          <div>
+            <p id="game-round-label" class="eyebrow">Rodada 1</p>
+            <h2 id="game-title">Tap Palavra</h2>
+          </div>
+          <div class="topbar-actions">
+            <button id="btn-pause" class="icon-btn" aria-label="Pausar partida">Ⅱ</button>
+            <button id="btn-quit" class="icon-btn danger" aria-label="Encerrar partida">×</button>
+          </div>
+        </header>
+
+        <div class="category-card compact">
+          <span class="category-label">CATEGORIA</span>
+          <strong id="game-category">Animais</strong>
+        </div>
+
+        <div id="scoreboard" class="scoreboard" aria-label="Placar"></div>
+
+        <section class="board-section">
+          <div id="letter-wheel" class="letter-wheel" aria-label="Roda de letras">
+            <button id="center-button" class="center-button" type="button" disabled>
+              <span id="timer-value" class="timer-value">10</span>
+              <small id="center-label">ESCOLHA</small>
+            </button>
+          </div>
+        </section>
+
+        <div class="turn-card" aria-live="polite">
+          <span>VEZ DE</span>
+          <strong id="current-player">Jogador 1</strong>
+          <p id="turn-help">Fale uma resposta, toque na letra inicial e depois no centro.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-round-end" class="screen" aria-labelledby="round-end-title">
+      <div class="panel result-panel">
+        <p class="eyebrow">Fim da rodada</p>
+        <div class="result-icon" aria-hidden="true">★</div>
+        <h2 id="round-end-title"><span id="round-winner">Jogador 1</span> venceu!</h2>
+        <p id="round-score-message" class="subtitle">Uma carta foi adicionada ao placar.</p>
+        <div id="round-scoreboard" class="scoreboard result-scoreboard"></div>
+        <button id="btn-next-round" class="btn btn-primary btn-large">Próxima rodada</button>
+      </div>
+    </section>
+
+    <section id="screen-game-end" class="screen" aria-labelledby="game-end-title">
+      <div class="panel result-panel winner-panel">
+        <p class="eyebrow">Partida encerrada</p>
+        <div class="result-icon crown" aria-hidden="true">♛</div>
+        <h2 id="game-end-title"><span id="game-winner">Jogador 1</span> é o campeão!</h2>
+        <p id="game-final-message" class="subtitle"></p>
+        <div id="final-scoreboard" class="scoreboard result-scoreboard"></div>
+        <div class="result-actions">
+          <button id="btn-play-again" class="btn btn-primary btn-large">Jogar novamente</button>
+          <button id="btn-home" class="btn btn-secondary">Tela inicial</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="pause-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <div class="modal-card">
+        <p class="eyebrow">Partida pausada</p>
+        <h2 id="pause-title">O cronômetro está parado</h2>
+        <p>Retome quando todos estiverem prontos.</p>
+        <button id="btn-resume" class="btn btn-primary btn-large">Continuar</button>
+      </div>
+    </div>
+
+    <div id="confirm-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <div class="modal-card">
+        <p class="eyebrow">Encerrar partida</p>
+        <h2 id="confirm-title">Deseja voltar ao início?</h2>
+        <p>O progresso desta partida será perdido.</p>
+        <div class="modal-actions">
+          <button id="btn-confirm-quit" class="btn btn-danger">Encerrar</button>
+          <button id="btn-cancel-quit" class="btn btn-secondary">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  </main>
+
+  <script src="./cards.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
